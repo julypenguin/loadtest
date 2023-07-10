@@ -10,7 +10,7 @@ function parseCookies(response) {
     }).join(';');
 }
 
-function loading_test({ url = '/', method = 'GET', repeat }) {
+function loadtest({ url = '/', method = 'GET', repeat }) {
     let total_time = 0 // 同一支 api 全部結束後的總回傳時間
     let fastest_time = 0 // 同一支 api 全部結束後，最快回傳的時間是多少
     let slowest_time = 0 // 同一支 api 全部結束後，最慢回傳的時間是多少
@@ -64,4 +64,4 @@ function loading_test({ url = '/', method = 'GET', repeat }) {
     }
 }
 
-module.exports = loading_test
+module.exports = loadtest

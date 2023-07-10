@@ -1,10 +1,10 @@
-const loading_test = require("./loadtest");
+const loadtest = require("./loadtest");
 const { exec } = require("child_process");
 
 const repeat = 5
 
-const login = loading_test({ url: '/core/login', method: 'POST', repeat })
-const getAnnList = loading_test({ url: '/core/announcement?enable_state=1&is_read=-1', repeat })
+const login = loadtest({ url: '/core/login', method: 'POST', repeat })
+const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1', repeat })
 
 const total_res_time_list = [] // 陣列紀錄所有下面一系列 api 分別總回傳時間
 let fastest_total_res_time = 0 // 下面一系列 api 總回傳時間最快的
@@ -15,14 +15,14 @@ for (let i = 1; i <= repeat; i++) {
     login
         .test({
             body: {
-                account: '',
+                account: ``,
                 ao_sid: '',
                 password: ''
             }
         })
         .then((res_time) => {
             total_res_time = total_res_time + res_time
-            return getAnnList.test({}, login.cookie)
+            return getAnnList.test({ page: i }, login.cookie)
         })
         .then((res_time) => {
             total_res_time = total_res_time + res_time
