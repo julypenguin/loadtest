@@ -63,7 +63,7 @@ function loadtest({ url = '/', method = 'GET', repeat }) {
                     return res_time
                 })
                 .catch(error => {
-                    console.log('url', error)
+                    console.log(url, error)
                 })
         }
     }
