@@ -55,10 +55,15 @@ function loadtest({ url = '/', method = 'GET', repeat }) {
                     this.slowest_time = res_time > this.slowest_time ? res_time : this.slowest_time
                     this.time_list.push(res_time)
 
+                    if (!repeat) this.avg_time = this.total_time / this.resIdx
+
                     if (repeat === this.resIdx) {
                         this.avg_time = this.total_time / this.resIdx
                     }
                     return res_time
+                })
+                .catch(error => {
+                    console.log('url', error)
                 })
         }
     }
