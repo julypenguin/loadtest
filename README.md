@@ -35,8 +35,8 @@ const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1
 | method      | string               | `GET`、`POST`、`PATCH`、`DELETE`、`PUT`                  |
 | repeat      | int                  | 執行 `repeat` 次數後會計算平均回傳時間                    |
 | customAPI   | string               | 替換 apiDomain                                           |
-| failResult  | string `||` object   | 若此值和 response.body 的某個值相同時，就判斷為錯誤 (選填) |
-| succResult  | string `||`` object  | response.body 必須要有此值才會成功                        |
+| failResult  | string or object     | 若此值和 response.body 的某個值相同時，就判斷為錯誤 (選填) |
+| succResult  | string or object     | response.body 必須要有此值才會成功                        |
 
 * 再使用 `.test()` 發出 request，可用參數如下
 
