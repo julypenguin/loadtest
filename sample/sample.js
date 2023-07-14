@@ -1,4 +1,4 @@
-const loadtest = require("./lib/loadtest");
+const loadtest = require("../lib/loadtest");
 const fs = require('fs');
 
 const repeat = 1
@@ -38,7 +38,7 @@ for (let i = 1; i <= repeat; i++) {
             if (total_res_time_list.length === repeat) {
                 const avg_total_res_time = total_res_time_list.reduce((acc, time) => acc + time, 0) / repeat
                 try {
-                    fs.writeFileSync('test.json', JSON.stringify({
+                    fs.writeFileSync('../test.json', JSON.stringify({
                         login: { ...login, time_list: [], error_list: [] },
                         getAnnList: { ...getAnnList, time_list: [], error_list: [] },
                         fastest_total_res_time,
@@ -50,7 +50,7 @@ for (let i = 1; i <= repeat; i++) {
                 }
 
                 try {
-                    fs.writeFileSync('test_row.json', JSON.stringify({
+                    fs.writeFileSync('../test_row.json', JSON.stringify({
                         login: {
                             time_list: login.time_list,
                             error_list: login.error_list,
