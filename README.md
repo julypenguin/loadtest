@@ -29,11 +29,14 @@ const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1
 
 * `loadtest()` 可填入的參數
 
-| KEY         | TYPE     | DESCRIPTION                                      |
-| :---        | :---:    | :---                                             |
-| url         | string   | api router 去除 `apiDomain` 後所剩餘的路徑        |
-| method      | string   | `GET`、`POST`、`PATCH`、`DELETE`、`PUT`           |
-| repeat      | int      | 執行 `repeat` 次數後會計算平均回傳時間             |
+| KEY         | TYPE                 | DESCRIPTION                                             |
+| :---        | :---:                | :---                                                    |
+| url         | string               | api router 去除 `apiDomain` 後所剩餘的路徑               |
+| method      | string               | `GET`、`POST`、`PATCH`、`DELETE`、`PUT`                  |
+| repeat      | int                  | 執行 `repeat` 次數後會計算平均回傳時間                    |
+| customAPI   | string               | 替換 apiDomain                                           |
+| failResult  | string `||` object   | 若此值和 response.body 的某個值相同時，就判斷為錯誤 (選填) |
+| succResult  | string `||`` object  | response.body 必須要有此值才會成功                        |
 
 * 再使用 `.test()` 發出 request，可用參數如下
 
@@ -67,10 +70,10 @@ login.test({
 ## Example
 
 ```javascript
-const loadtest = require("./loadtest");
-const { exec } = require("child_process");
+const loadtest = require("../lib/loadtest");
+const fs = require('fs');
 
-const repeat = 5
+const repeat = 1
 
 const login = loadtest({ url: '/core/login', method: 'POST', repeat })
 const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1', repeat })
@@ -87,11 +90,15 @@ for (let i = 1; i <= repeat; i++) {
                 account: ``,
                 ao_sid: '',
                 password: ''
-            }
+            },
         })
         .then((res_time) => {
             total_res_time = total_res_time + res_time
-            return getAnnList.test({ page: i }, login.cookie)
+            return getAnnList.test({
+                headers: {
+                    page: i,
+                }
+            }, login.cookie)
         })
         .then((res_time) => {
             total_res_time = total_res_time + res_time
@@ -102,19 +109,37 @@ for (let i = 1; i <= repeat; i++) {
 
             if (total_res_time_list.length === repeat) {
                 const avg_total_res_time = total_res_time_list.reduce((acc, time) => acc + time, 0) / repeat
-                exec(`echo ${JSON.stringify({
-                    login: { ...login, time_list: [] },
-                    getAnnList: { ...getAnnList, time_list: [] },
-                    fastest_total_res_time,
-                    slowest_total_res_time,
-                    avg_total_res_time,
-                })} > test.json`)
-                exec(`echo ${JSON.stringify({
-                    login: login.time_list,
-                    getAnnList: getAnnList.time_list,
-                    total_res_time_list,
-                })} > test_row.json`)
+                try {
+                    fs.writeFileSync('../test.json', JSON.stringify({
+                        login: { ...login, time_list: [], error_list: [] },
+                        getAnnList: { ...getAnnList, time_list: [], error_list: [] },
+                        fastest_total_res_time,
+                        slowest_total_res_time,
+                        avg_total_res_time,
+                    }, null, "\t"));
+                } catch (err) {
+                    console.error(err);
+                }
+
+                try {
+                    fs.writeFileSync('../test_row.json', JSON.stringify({
+                        login: {
+                            time_list: login.time_list,
+                            error_list: login.error_list,
+                        },
+                        getAnnList: {
+                            time_list: getAnnList.time_list,
+                            error_list: getAnnList.error_list,
+                        },
+                        total_res_time_list,
+                    }, null, "\t"));
+                } catch (err) {
+                    console.error(err);
+                }
             }
+        })
+        .catch(error => {
+
         })
 }
 ```
@@ -123,53 +148,73 @@ for (let i = 1; i <= repeat; i++) {
 * test.json
 ```json
 {
-    "login": {
-        "total_time": 1652,
-        "fastest_time": 301,
-        "slowest_time": 346,
-        "avg_time": 330.4,
-        "time_list": [],
-        "resIdx": 5,
-        "cookie": "ASP.NET_SessionId=yerpj13ohvxsz1a0sv011i2h;passportcode=uNxtQ8bpR8lpH2wvIRfpB5cnY5owqJ9pcFFfv42hp47bm52jx4Zrd61afs4XlyE7hcZ6uhAGnqSGwmSNxvDGozqqDGtrDNlbT7yf11msXLqj1CmxWToallCHcuWIvvNHvjV9rqLVxv03qfQ9oabqR2knQIusBJmvOHvlI5fyIOcsUJeznkJOrdF4utF5xk4MumYMcl2Mvp6Zogwd4MnrZMqtGEryAAynZCrkEW"
-    },
-    "getAnnList": {
-        "total_time": 14953,
-        "fastest_time": 2442,
-        "slowest_time": 4031,
-        "avg_time": 2990.6,
-        "time_list": [],
-        "resIdx": 5,
-        "cookie": ""
-    },
-    "fastest_total_res_time": 2743,
-    "slowest_total_res_time": 4370,
-    "avg_total_res_time": 3321
+	"login": {
+		"total_time": 207,
+		"fastest_time": 44,
+		"slowest_time": 71,
+		"avg_time": 51.75,
+		"time_list": [],
+		"error": {},
+		"error_list": [],
+		"resIdx": 4,
+		"cookie": "ASP.NET_SessionId=bfvu5udix0fr5s23uxxbplw4;passportcode=;ASP.NET_SessionId=zq5abbovnnoeoqkfudmsaqrw"
+	},
+	"getAnnList": {
+		"total_time": 0,
+		"fastest_time": 0,
+		"slowest_time": 0,
+		"avg_time": 0,
+		"time_list": [],
+		"error": {
+			"401": 4
+		},
+		"error_list": [],
+		"resIdx": 4,
+		"cookie": ""
+	},
+	"fastest_total_res_time": 0,
+	"slowest_total_res_time": 0,
+	"avg_total_res_time": 0
 }
 ```
 
 * test_row.json
 ```json
 {
-    "login": [
-        301,
-        321,
-        339,
-        345,
-        346
-    ],
-    "getAnnList": [
-        2442,
-        2521,
-        2971,
-        2988,
-        4031
-    ],
-    "total_res_time_list": [
-        2743,
-        2842,
-        3316,
-        3334,
-        4370
-    ]
+	"login": {
+		"time_list": [
+			71,
+			44,
+			45,
+			47
+		],
+		"error_list": []
+	},
+	"getAnnList": {
+		"time_list": [],
+		"error_list": [
+			{
+				"res_time": 20,
+				"statusCode": 401,
+				"content": "{\"code\":2,\"result\":false,\"errmsg\":\"passportcode is null.\",\"data\":{\"sso\":{\"mode\":\"0\",\"redirect\":\"\"}}}"
+			},
+			{
+				"res_time": 28,
+				"statusCode": 401,
+				"content": "{\"code\":2,\"result\":false,\"errmsg\":\"passportcode is null.\",\"data\":{\"sso\":{\"mode\":\"0\",\"redirect\":\"\"}}}"
+			},
+			{
+				"res_time": 28,
+				"statusCode": 401,
+				"content": "{\"code\":2,\"result\":false,\"errmsg\":\"passportcode is null.\",\"data\":{\"sso\":{\"mode\":\"0\",\"redirect\":\"\"}}}"
+			},
+			{
+				"res_time": 28,
+				"statusCode": 401,
+				"content": "{\"code\":2,\"result\":false,\"errmsg\":\"passportcode is null.\",\"data\":{\"sso\":{\"mode\":\"0\",\"redirect\":\"\"}}}"
+			}
+		]
+	},
+	"total_res_time_list": []
 }
 ```
