@@ -20,7 +20,7 @@ npm ci
 * 先使用 `loadtest()` 來指定要壓測的目標
 
 ```javascript
-const loadtest = require("./loadtest");
+const loadtest = require("../loadtest");
 
 const repeat = 5
 const login = loadtest({ url: '/core/login', method: 'POST', repeat })
