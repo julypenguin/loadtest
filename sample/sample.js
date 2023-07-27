@@ -1,17 +1,18 @@
 const loadtest = require("../lib/loadtest");
-const fs = require('fs');
+const record = require('../lib/record')
 
-const repeat = 1
+let repeat = process.argv[2] || 4
+repeat = Number(repeat)
 
-const login = loadtest({ url: '/core/login', method: 'POST', repeat, succResult: { result: true } })
-const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1', repeat })
+const login = loadtest({ url: '/core/login', method: 'POST', repeat, failResult: { result: false }, succResult: 'result', apiName: 'login' })
+const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1', repeat, failResult: { result: false }, succResult: 'result', apiName: 'getAnnList' })
 
-const total_res_time_list = [] // 陣列紀錄所有下面一系列 api 分別總回傳時間
-let fastest_total_res_time = 0 // 下面一系列 api 總回傳時間最快的
-let slowest_total_res_time = 0 // 下面一系列 api 總回傳時間最慢的
+const apisRecord = record(login, getAnnList) // 統計一連串 api 執行結果以及匯出報告 
+let resultIdx = 0 // 紀錄多次一連串 api 執行後，最後一次的最後一支 api 回傳
 
 for (let i = 1; i <= repeat; i++) {
-    let total_res_time = 0 // 下面一系列 api 總回傳時間
+    let cookie = ''
+    apisRecord.init(i) // 初始化設定
     login
         .test({
             body: {
@@ -20,53 +21,23 @@ for (let i = 1; i <= repeat; i++) {
                 password: ''
             },
         })
-        .then((res_time) => {
-            total_res_time = total_res_time + res_time
+        .then(({ res_time, res }) => {
+            apisRecord.addTime(i, res_time) // 紀錄 api 回傳時間做加總
+            cookie = login.cookie
             return getAnnList.test({
                 headers: {
                     page: i,
                 }
-            }, login.cookie)
+            }, cookie)
         })
-        .then((res_time) => {
-            total_res_time = total_res_time + res_time
-            total_res_time_list.push(total_res_time)
-
-            fastest_total_res_time = total_res_time < fastest_total_res_time || !fastest_total_res_time ? total_res_time : fastest_total_res_time
-            slowest_total_res_time = total_res_time > slowest_total_res_time ? total_res_time : slowest_total_res_time
-
-            if (total_res_time_list.length === repeat) {
-                const avg_total_res_time = total_res_time_list.reduce((acc, time) => acc + time, 0) / repeat
-                try {
-                    fs.writeFileSync('../test.json', JSON.stringify({
-                        login: { ...login, time_list: [], error_list: [] },
-                        getAnnList: { ...getAnnList, time_list: [], error_list: [] },
-                        fastest_total_res_time,
-                        slowest_total_res_time,
-                        avg_total_res_time,
-                    }, null, "\t"));
-                } catch (err) {
-                    console.error(err);
-                }
-
-                try {
-                    fs.writeFileSync('../test_row.json', JSON.stringify({
-                        login: {
-                            time_list: login.time_list,
-                            error_list: login.error_list,
-                        },
-                        getAnnList: {
-                            time_list: getAnnList.time_list,
-                            error_list: getAnnList.error_list,
-                        },
-                        total_res_time_list,
-                    }, null, "\t"));
-                } catch (err) {
-                    console.error(err);
-                }
+        .then(({ res_time, res }) => {
+            resultIdx++
+            apisRecord.finish(i, res_time) // 結算 api 總回傳時間
+            if (resultIdx === repeat) {
+                apisRecord.exportReport()
             }
         })
         .catch(error => {
-
+            console.log('test_error', error)
         })
 }
