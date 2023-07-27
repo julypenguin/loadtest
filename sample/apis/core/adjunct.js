@@ -5,14 +5,14 @@ const formatUrl = require("../../../lib/formatUrl");
  * GET /api/core/member/{aa_sid}/adjunct
  * @param {Object} params - return value of action creator
  */
-const getAdjunctList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/member/:aa_sid/adjunct`, data), method: 'GET', ...setting })
+const getAdjunctList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/member/:aa_sid/adjunct`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 批次更新人員兼職部門列表
  * PATCH /api/core/member/{aa_sid}/adjunct
  * @param {Object} params - return value of action creator
  */
-const updateAdjunctList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/member/:aa_sid/adjunct`, data), method: 'PATCH', ...setting })
+const updateAdjunctList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/member/:aa_sid/adjunct`, data), method: 'PATCH', failResult: { result: false }, succResult: 'result', ...setting })
 
 module.exports = {
     getAdjunctList,

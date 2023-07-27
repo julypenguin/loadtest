@@ -5,7 +5,7 @@ const formatUrl = require("../../../lib/formatUrl");
  * POST /core/checkaccount
  * @param {*} params - return value of action creator
  */
-const checkAccount = (setting = {}, data) => loadtest({ url: formatUrl(`/core/checkaccount`, data), method: 'POST', ...setting })
+const checkAccount = (setting = {}, data) => loadtest({ url: formatUrl(`/core/checkaccount`, data), method: 'POST', failResult: { result: false }, succResult: 'result', ...setting })
 
 module.exports = {
     checkAccount,

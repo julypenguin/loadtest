@@ -6,35 +6,35 @@ const formatUrl = require("../../../lib/formatUrl");
  * GET /core/messagetemplate/${path.it_sid}
  * @param {Object} params - return value of action creator
  */
-const getMsgtemplateDetail = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate/:it_sid`, data), method: 'GET', ...setting })
+const getMsgtemplateDetail = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate/:it_sid`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 取得訊息模板列表
  * GET /core/messagetemplate
  * @param {Object} params - return value of action creator
  */
-const getMsgtemplateList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate`, data), method: 'GET', ...setting })
+const getMsgtemplateList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 刪除特定訊息模板
  * DELETE /core/messagetemplate/${path.it_sid}
  * @param {Object} params - return value of action creator
  */
-const deleteMsgtemplate = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate/:it_sid`, data), method: 'DELETE', ...setting })
+const deleteMsgtemplate = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate/:it_sid`, data), method: 'DELETE', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 新增訊息模板列表
  * POST /core/messagetemplate
  * @param {Object} params - return value of action creator
  */
-const newMsgtemplate = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate`, data), method: 'POST', ...setting })
+const newMsgtemplate = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate`, data), method: 'POST', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 修改特定訊息模板
  * PATCH /core/messagetemplate/${path.it_sid}
  * @param {Object} params - return value of action creator
  */
-const updateMsgtemplate = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate/:it_sid`, data), method: 'PATCH', ...setting })
+const updateMsgtemplate = (setting = {}, data) => loadtest({ url: formatUrl(`/core/messagetemplate/:it_sid`, data), method: 'PATCH', failResult: { result: false }, succResult: 'result', ...setting })
 
 module.exports = {
     getMsgtemplateDetail,

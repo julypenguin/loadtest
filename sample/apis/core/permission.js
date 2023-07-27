@@ -6,7 +6,7 @@ const formatUrl = require("../../../lib/formatUrl");
  * GET /core/permission
  * @param {Object} params - return value of action creator
  */
-const getPermissionList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permission`, data), method: 'GET', ...setting })
+const getPermissionList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permission`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 module.exports = {
     getPermissionList,

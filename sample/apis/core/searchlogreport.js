@@ -6,7 +6,7 @@ const formatUrl = require("../../../lib/formatUrl");
  * POST /core/searchlogreport
  * @param {Object} params - return value of action creator
  */
-const newSearchlogreport = (setting = {}, data) => loadtest({ url: formatUrl(`/core/searchlogreport`, data), method: 'POST', ...setting })
+const newSearchlogreport = (setting = {}, data) => loadtest({ url: formatUrl(`/core/searchlogreport`, data), method: 'POST', failResult: { result: false }, succResult: 'result', ...setting })
 
 module.exports = {
     newSearchlogreport,

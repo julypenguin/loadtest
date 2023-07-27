@@ -6,42 +6,42 @@ const formatUrl = require("../../../lib/formatUrl");
  * DELETE /core/permapping/${path.pm_sid}
  * @param {Object} params - return value of action creator
  */
-const deletePrmap = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/:pm_sid`, data), method: 'DELETE', ...setting })
+const deletePrmap = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/:pm_sid`, data), method: 'DELETE', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 取得特定權限對應細節
  * GET /core/permapping/${path.pm_sid}
  * @param {Object} params - return value of action creator
  */
-const getPrmapDetail = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/:pm_sid`, data), method: 'GET', ...setting })
+const getPrmapDetail = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/:pm_sid`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 取得權限對應的列表
  * GET /core/permapping
  * @param {Object} params - return value of action creator
  */
-const getPrmapList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping`, data), method: 'GET', ...setting })
+const getPrmapList = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 取得權限對應的 webhook
  * GET /core/permapping/webhook
  * @param {Object} params - return value of action creator
  */
-const getPrmapWebhook = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/webhook`, data), method: 'GET', ...setting })
+const getPrmapWebhook = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/webhook`, data), method: 'GET', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 建立權限對應
  * POST /core/permapping
  * @param {Object} params - return value of action creator
  */
-const newPrmap = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping`, data), method: 'POST', ...setting })
+const newPrmap = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping`, data), method: 'POST', failResult: { result: false }, succResult: 'result', ...setting })
 
 /**
  * 修改特定權限對應細節
  * PATCH /core/permapping/${path.pm_sid}
  * @param {Object} params - return value of action creator
  */
-const updatePrmap = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/:pm_sid`, data), method: 'PATCH', ...setting })
+const updatePrmap = (setting = {}, data) => loadtest({ url: formatUrl(`/core/permapping/:pm_sid`, data), method: 'PATCH', failResult: { result: false }, succResult: 'result', ...setting })
 
 module.exports = {
     deletePrmap,
