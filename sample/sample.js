@@ -8,11 +8,10 @@ const login = loadtest({ url: '/core/login', method: 'POST', repeat, failResult:
 const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1', repeat, failResult: { result: false }, succResult: 'result', apiName: 'getAnnList' })
 
 const apisRecord = record(login, getAnnList) // 統計一連串 api 執行結果以及匯出報告 
-let resultIdx = 0 // 紀錄多次一連串 api 執行後，最後一次的最後一支 api 回傳
+apisRecord.init({ repeat }) // 初始化設定，repeat 必填
 
 for (let i = 1; i <= repeat; i++) {
     let cookie = ''
-    apisRecord.init(i) // 初始化設定
     login
         .test({
             body: {
@@ -31,13 +30,10 @@ for (let i = 1; i <= repeat; i++) {
             }, cookie)
         })
         .then(({ res_time, res }) => {
-            resultIdx++
             apisRecord.finish(i, res_time) // 結算 api 總回傳時間
-            if (resultIdx === repeat) {
-                apisRecord.exportReport()
-            }
         })
         .catch(error => {
+            apisRecord.finish(i) // 結算 api 總回傳時間
             console.log('test_error', error)
         })
 }

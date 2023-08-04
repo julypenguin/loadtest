@@ -8,9 +8,9 @@ const _getAbout = apis.getAbout({ apiName: 'getAbout' })
 const _getAbout2 = apis.getAbout({ apiName: 'getAbout2' })
 
 const apisRecord = record(_getAbout, _getAbout2)
+apisRecord.init({ repeat }) // 初始化設定，repeat 必填
 
 for (let i = 1; i <= repeat; i++) {
-    apisRecord.init(i)
     _getAbout
         .test()
         .then(({ res_time, res }) => {
@@ -19,15 +19,9 @@ for (let i = 1; i <= repeat; i++) {
         })
         .then(({ res_time, res }) => {
             apisRecord.finish(i, res_time)
-            if (apisRecord.idx === repeat) {
-                apisRecord.exportReport()
-            }
         })
         .catch(error => {
-            apisRecord.finish(i, 0)
-            if (apisRecord.idx === repeat) {
-                apisRecord.exportReport()
-            }
+            apisRecord.finish(i)
             console.log('test_error', error)
         })
 }
