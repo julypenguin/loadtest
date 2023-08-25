@@ -1,14 +1,16 @@
 const apis = require('./apis/index')
 const record = require('../lib/record')
+const cmd = require('../lib/cmd')
 
-let repeat = process.argv[2] || 4
-repeat = Number(repeat)
+const repeat = cmd.concurrency
 
 const _getAbout = apis.getAbout({ apiName: 'getAbout' })
 const _getAbout2 = apis.getAbout({ apiName: 'getAbout2' })
 
 const apisRecord = record(_getAbout, _getAbout2)
-apisRecord.init({ repeat }) // 初始化設定，repeat 必填
+apisRecord.setPath = '../'
+apisRecord.setFilename = 'test'
+apisRecord.init({ repeat }) // 初始化設定，可選填
 
 for (let i = 1; i <= repeat; i++) {
     _getAbout

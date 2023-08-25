@@ -1,14 +1,14 @@
 const loadtest = require("../lib/loadtest");
 const record = require('../lib/record')
+const cmd = require('../lib/cmd')
 
-let repeat = process.argv[2] || 4
-repeat = Number(repeat)
+const repeat = cmd.concurrency
 
 const login = loadtest({ url: '/core/login', method: 'POST', repeat, failResult: { result: false }, succResult: 'result', apiName: 'login' })
 const getAnnList = loadtest({ url: '/core/announcement?enable_state=1&is_read=-1', repeat, failResult: { result: false }, succResult: 'result', apiName: 'getAnnList' })
 
 const apisRecord = record(login, getAnnList) // 統計一連串 api 執行結果以及匯出報告 
-apisRecord.init({ repeat }) // 初始化設定，repeat 必填
+apisRecord.init({ repeat }) // 初始化設定，選填
 
 for (let i = 1; i <= repeat; i++) {
     let cookie = ''
