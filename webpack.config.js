@@ -18,11 +18,6 @@ module.exports = {
     ],
     externals: {
         'node-fetch': 'node-commonjs node-fetch',
-    },
-    optimization: {
-        minimize: false,
-        usedExports: false,
-        concatenateModules: false
     }
 };
 
