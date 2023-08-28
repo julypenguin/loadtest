@@ -1,4 +1,4 @@
 node_modules/
 dist/
-test_row.json
-test.json
+*test_row.json
+*test.json
